@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Cadastro de Comidas</title>
+</head>
+
+<body>
+    <header>
+        <h2>🍕 Cadastro de Comidas</h2>
+        <nav>
+            <a href="/dashboard">🏠 Dashboard</a> |
+            <a href="/gestao-estoque">📊 Gestão de Estoque</a> |
+            <a href="/logout">🚪 Sair</a>
+        </nav>
+    </header>
+
+    <main>
+        <section class="busca">
+            <form method="GET" action="/cadastro-produto">
+                <input type="text" name="busca" value="<%= busca %>" placeholder="🔍 Buscar comida...">
+                <button type="submit">Buscar</button>
+            </form>
+        </section>
+
+        <section class="novo-produto">
+            <h3>➕ Cadastrar nova comida</h3>
+            <form action="/comidas" method="POST" class="form-produto">
+                <input type="text" name="nome" placeholder="Nome da comida" required>
+                <input type="number" name="preco" step="0.01" placeholder="Preço" required>
+                <input type="number" name="estoque" placeholder="Quantidade inicial" min="0" value="10">
+                <button type="submit">Salvar</button>
+            </form>
+        </section>
+
+        <section>
+            <h3>📋 Comidas cadastradas</h3>
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Preço</th>
+                        <th>Estoque</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% comidas.forEach(comida => { %>
+                        <tr class="<%= comida.estoque < 5 ? 'baixo' : 'ok' %>">
+                            <form action="/comidas/update/<%= comida.id %>" method="POST">
+                                <td><input type="text" name="nome" value="<%= comida.nome %>" required></td>
+                                <td><input type="number" name="preco" step="0.01" value="<%= comida.preco %>" required></td>
+                                <td><input type="number" name="estoque" value="<%= comida.estoque %>" min="0"></td>
+                                <td>
+                                    <button type="submit">💾 Atualizar</button>
+                            </form>
+                            <form action="/comidas/delete/<%= comida.id %>" method="POST" style="display:inline">
+                                <button type="submit" onclick="return confirm('Excluir <%= comida.nome %>?')">🗑️ Excluir</button>
+                            </form>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </section>
+    </main>
+</body>
+
+</html>

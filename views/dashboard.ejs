@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+ <html lang="pt">
+
+ <head>
+    <meta charset="UTF-8">
+    <title>Cantina</title>
+ </head>
+
+ <body>
+    <h2>Bem-vindo, <%= usuario.nome %>!</h2>
+    <a href="/logout">Sair</a>
+
+    <h3>🔎 Buscar Alimento</h3>
+    <form method="GET" action="/dashboard">
+        <input name="busca" placeholder="Buscar por nome" value="<%= busca %>">
+        <button type="submit">Buscar</button>
+    </form>
+
+    <h3>🥖 Cadastrar Alimento</h3>
+        <form method="POST" action="/comidas">
+            <input type="text" name="nome" placeholder="Nome da comida" required>
+            <input type="number" name="preco" step="0.01" placeholder="Preço" required>
+            <input type="number" name="estoque" placeholder="Estoque" value="10">
+            <button type="submit">Cadastrar</button>
+        </form>
+
+    <h3>📄 Comidas</h3>
+        <ul>
+            <% comidas.forEach(comida => { %>
+                <li>
+                    <strong>
+                        <%= comida.nome %>
+                    </strong> - R$ <%= comida.preco %> (Estoque: <%= comida.estoque %>)
+                        <% if (comida.estoque < 5) { %> ⚠️ <b>Estoque baixo!</b>
+                            <% } %>
+                            <form method="POST" action="/comidas/update/<%= comida.id %>">
+                                <input name="nome" value="<%= comida.nome %>" required>
+                                <input name="preco" type="number" step="0.01" value="<%= comida.preco %>" required>
+                                <input name="estoque" type="number" value="<%= comida.estoque %>">
+                                <button type="submit">Salvar</button>
+                            </form>
+                            <form method="POST" action="/comidas/delete/<%= comida.id %>">
+                                <button type="submit">Excluir</button>  
+                            </form>
+                </li>
+                <% }) %>
+        </ul>
+
+    <h3>💸 Registrar Venda</h3>
+    <form method="POST" action="/vendas">
+        <select name="comida_id">
+            <% comidas.forEach(comida => { %>
+                <option value="<%= comida.id %>">
+                    <%= comida.nome %>
+                </option>
+            <% }) %>
+        </select>
+        <input type="number" name="quantidade" value="1" min="1">
+        <button type="submit">Vender</button>
+    </form>
+
+    <h3>📈 Últimas Vendas</h3>
+    <ul>
+        <% vendas.forEach(v=> { %>
+            <li>
+                    <%= v.usuario %> vendeu <%= v.quantidade %>x <%= v.comida %> - <%= v.data %>
+            </li>
+        <% }) %>
+    </ul>
+</body>
+
+</html>
